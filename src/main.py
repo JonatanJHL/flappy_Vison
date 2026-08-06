@@ -7,8 +7,16 @@ import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 
-# ─── Inicializar Pygame ───────────────────────────────────────────────────────
-pygame.init()
+import os
+import urllib.request
+
+def ensure_model_file():
+    model_path = 'hand_landmarker.task'
+    if not os.path.exists(model_path):
+        print("[Setup] Descargando modelo MediaPipe hand_landmarker.task...")
+        url = 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task'
+        urllib.request.urlretrieve(url, model_path)
+        print("[Setup] Modelo descargado con éxito.")
 
 # ─── Configuración de pantalla ────────────────────────────────────────────────
 SCREEN_WIDTH  = 400
@@ -298,6 +306,8 @@ class Game:
     MODE_SPLIT     = "split"    # 2 jugadores pantalla dividida
 
     def __init__(self):
+        pygame.init()
+        ensure_model_file()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption("Flappy Hand – ¡Controla con tu mano!")
         self.clock    = pygame.time.Clock()
